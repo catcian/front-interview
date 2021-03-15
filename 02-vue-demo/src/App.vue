@@ -8,12 +8,14 @@
     <list-demo></list-demo> -->
     <!-- <event-demo></event-demo> -->
     <!-- <form-demo></form-demo> -->
-    <index></index>
+    <!-- <index></index> -->
+    <advanced-use></advanced-use>
   </div>
 </template>
 
 <script>
-import Index from './components/ComponentsDemo/index'
+import AdvancedUse from './components/AdvancedUse'
+// import Index from './components/ComponentsDemo/index'
 // import EventDemo from './components/BaseUse/EventDemo.vue'
 // import FormDemo from './components/BaseUse/FormDemo.vue'
 // import ListDemo from './components/BaseUse/ListDemo.vue'
@@ -34,7 +36,8 @@ export default {
     // ListDemo,
     // EventDemo,
     // FormDemo,
-    Index
+    // Index
+    AdvancedUse
   }
 }
 </script>

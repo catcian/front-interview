@@ -176,8 +176,247 @@ vue 组件 总结
 3-8 自定义 v-model
 ./components/AdvancedUse/index
 
+3-9 vue 组件更新之后如何获取最新的 dom
+$nextTick
+1. vue 是异步渲染框架（原理部分会详细讲解）
+1. data 改变之后，dom 不会立刻渲染
+1. $nextTick 会在 DOM 渲染之后被触发，以获取最新的 dom 节点
 
+AdvancedUse/NextTick.vue
 
+3-10 slot 是什么？ 插槽
+父组件 向子组件 插入点内容
+1. 基本使用
+1. 作用域插槽
+1. 具名插槽
+AdvancedUse/SlotDemo
+AdvancedUse/ScopedSlotDemo
+AdvancedUse/NamedSolot
 
+3-11 vue 动态组件
+1. :is = "component-name" 用法
+1. 需要根据数据，动态渲染的场景，即组件类型不确定
 
+3-12 vue 如何加载异步组件
+toB PC 中台 管理 系统，
+1. import() 函数
+1. 按需加载，异步加载大组件
 
+3-13 vue 如何缓存组件 keep-alive
+1. 缓存组件
+1. 频繁切换，不需要重复渲染
+1. vue 常见性能优化中，不只 keep-alive
+
+3-14 vue 组件如何抽离公共逻辑 mixin 混合
+1. 多个组件有相同的逻辑，抽离出来
+1. mixin 并不是完美的解决方案，会有一些问题
+1. vue3 提出 composition api 旨在解决这些问题
+
+问题：
+1. 变量来源不明确，不利于阅读
+1. 多 mixin 可能造成变量重复，命名冲突
+1. mixin 和组件可能出现多对多的关系，复杂度较高
+
+/MixinDemo.vue
+
+3-15 vue 高级特性知识点小结
+1. 自定义 v-model
+1. nextTick
+1. slot
+1. 动态、异步组件
+1. keep-alive
+1. mixin
+
+面试技巧
+1. 可以不太深入，但必须知道
+1. 熟悉基本用法，了解使用场景
+1. 最好能和自己的项目经验结合起来
+
+3-16 vuex 使用
+1. 面试考点并不多
+1. 基本概念，基本使用 和 api 必须掌握
+1. 考察 state 数据结构设计（后面会讲）
+
+vuex 基本概念
+1. state
+1. getters
+1. action
+1. mutation
+
+用于 vue 组件
+1. dispatch
+1. commit
+1. mapState
+1. mapGetters
+1. mapActions
+1. mapMutations
+
+重点：Actions 才能做异步操作
+
+Mutations 原子操作，最小同步
+
+3-17 vue-router 知识点串讲
+1. 考点并不多
+1. 路由模式hash H5 history
+1. 路由配置：动态路由、懒加载
+
+vue-router 路由模式
+1. hash 模式（默认）http://abc.com/#/user/10
+1. H5 history 默认 http://abc.com/user/20
+1. 后者需要 server 端支持，因此无特殊需要可选择前者（后端配置例子）
+const router = new VueRouter({
+  mode: 'history'// 使用 h5 history 模式
+  routes: [...]
+})
+
+vue-router 路由配置 动态路由
+const User = {
+  // 获取参数 10 20
+  template: '<div>User {{ $route.params.id}}</div>'
+}
+const router = new VueRouter({
+  routes: [
+    // 动态路径参数，以冒号开头。命中 ‘/user/10' '/user/20'
+    {path: '/user/:id', component: User}
+  ]
+})
+
+vue-router 路由配置 懒加载
+export default new VueRouter({
+  routes: [
+    {
+      path: '/', 
+      component: () => import('./../components/Navigator')
+    },
+    {
+      path: '/feedback', 
+      component: () => import(
+        /* webpackChunkName: "feedback "*/
+        './../components/feedback')
+    }
+  ]
+})
+
+vuex vue-router 总结
+1. 考点不多
+1. 基本概念，基本使用
+1. 面试官时间有限，考察最核心，常用问题，非边角问题
+
+3-18 vue 使用 考点总结复习
+1. 基本使用，组件使用
+1. 高级特性
+1. vuex vue-router使用
+
+回顾 vue 面试题
+1. v-show v-if区别
+1. 为何 v-for 要用 key ，业务需要用的不重复 id
+1. 描述 vue 组件生命周期 （有父子组件的情况）
+1. vue 组件如何通讯 父子组件、层级比较（自定义事件）、vuex通讯
+1. 描述组件渲染和更新的过程
+1. 双向数据绑定 v-model实现原理
+
+4-1 vue 原理（大厂必考）
+1. 原理不代表源码
+1. 面试为何会考察原理？
+1. 面试中如何考察？以何种方式？
+1. vue 原理包括哪些？
+
+面试为何会考察原理，又用不到？
+1. 知其然知其所以然 - 各行业通用道理
+1. 了解原理，才能应用更好（竞争激烈，择优录用）
+1. 大厂造轮子（有钱有资源，业务定制，技术 kpi）
+
+面试如何考察 vue 原理？
+1. 考察重点，而不是考察细节，掌握好 2/8 原则
+1. 和使用相关的原理，例如 vdom 、模板渲染
+1. 整体流程是否全面？热门技术是否有深度？
+
+vue 原理
+1. 组件化
+1. 响应式原理
+1. vdom 和 diff
+1. 模板编译
+1. 组件渲染过程
+1. 前端路由
+
+4-2 vue 组件化基础
+1. 如何了解 vue MVVM 模型和组件化分不开
+1. 很久以前就有组件化
+1. 数据驱动视图（MVVM，setState）
+
+很久以前组件化
+1. asp jsp php 已经有组件化
+1. nodejs 中也有类似的组件化
+
+对比 vue react 的组件化
+
+数据驱动视图
+1. 传统组件，只是静态渲染，更新还要依赖操作 dom
+1. 数据驱动视图 vue MVVM
+1. 数据驱动视图 react setState 
+1. 数据驱动视图：不在自己操作dom，想改什么地方，就去修改哪些数据就行，更加关注业务
+
+vue MVVM 模型 Model View ViewModel
+1. View -》 DOM Listeners/ Directives(指令) -> Model
+    dom     viewModel             
+
+Model (data)
+View (template)            
+ViewModel (@click methods View 怎么去修改Model)
+
+总结
+1. 组件化，很久以前就存在了
+1. 数据驱动视图
+1. MVVM 模型
+
+4-3 监听data 变化核心 api是什么？
+Vue 响应式
+1. 组件 data 数据一旦变化，立刻触发视图更新
+1. 实现数据驱动视图第一步
+1. 考察 vue 原理的第一题
+
+1. 核心 api - Object.defineProperty
+1. 如何实现响应式，代码演示
+1. Object.defineProperty 的一些缺点 （Vue3.0 启用 Proxy）
+
+Proxy 有兼容性问题
+1. Proxy 兼容性不好，且无法 polyfill
+1. vue2.x 还会存在一段时间，所以都得学
+1. vue3.x 相关知识，下一掌讲，这里只是先提一下
+
+Obkect.defineProperty 基本用法
+``` Object.defineProperty
+const data = {}
+let name = "zhangsan"
+Object.defineProperty(data, "name", {
+    get: function () {
+        console.log("get")
+        return name
+    },
+    set: function (newVal) {
+        console.log("set")
+        name = newVal
+    }
+})
+
+data.name = 'laowang' / set
+data.name / get
+```
+
+Object.defineProperty 实现响应式
+1. 监听对象，监听数组
+1. 复杂对象，深度监听
+1. 几个缺点
+
+4-4 如何深度监听 data 变化
+observe-demo/index.html
+observe-demo/observe.js
+npm i http-server -g
+http-server -p 8001
+
+Object.defineProperty 缺点
+1. 深度监听，需要递归监听，一次性计算量大 （对象非常非常大，可能会卡死）
+1. 无法监听新增属性/删除属性（因此增加 Vue.set/Vue/delete)
+问题：
+1. 深度监听，需要一次性递归完么？
+1. 新增属性，删除属性不会监听到？
