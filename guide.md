@@ -414,9 +414,147 @@ observe-demo/observe.js
 npm i http-server -g
 http-server -p 8001
 
+1. 准备数据
+1. 监听数据/监听对象属性 -> 重新定义属性，监听起来
+1. 测试 数据发生变化 触发更新视图 upDataView
+
 Object.defineProperty 缺点
 1. 深度监听，需要递归监听，一次性计算量大 （对象非常非常大，可能会卡死）
 1. 无法监听新增属性/删除属性（因此增加 Vue.set/Vue/delete)
+1. 无法监听原生数组，需要特殊处理
 问题：
 1. 深度监听，需要一次性递归完么？
 1. 新增属性，删除属性不会监听到？
+
+4-5 如何监听数组变化
+Object.defineProperty 不具备监听 数组能力
+const arrProto = Object.create(oldArrayPrototype)
+
+<- 临时 补充 闭包知识点 ->
+6-1 作用域
+题目
+1. this 的不同应用场景，如何取值？
+1. 手写 bind 函数
+1. 实际开发中闭包的应用场景
+1. 创建 10 个 a 标签，点击的时候弹出来对应的序号
+
+知识点
+1. 作用域和自由变量
+1. 闭包
+1. this
+
+作用域：某个变量的合法使用范围
+1. 全局作用域
+1. 函数作用域
+1. 块级作用域（ES6 新增）
+
+自由变量
+1. 一个变量在当前作用域没有定义，但被使用了
+1. 向上级作用域，一层一层依次寻找，直至找到为止
+1. 如何到了全局作用域都没有找到，则报错， xx is not defined
+
+6-2 闭包
+1. 作用域应用的特殊情况，有两种表现：
+1. 函数作为参数被传递
+1. 函数作为返回值
+<- 临时 补充 闭包知识点 ->
+
+4-6 虚拟 dom virtual dom 和 diff 算法
+1. vdom 是实现 vue 和 react 的重要基石
+1. diff 算法是 vdom 中最核心、最关键的部分
+1. vdom 是一个热门话题，也是面试中的热门问题
+
+背景：
+1. dom 操作非常耗费性能
+1. 以前用 jQuery，可以自行控制 dom 操作时机，手动跳转
+1. vue 和 react 都是数据驱动视图，如何有效控制 dom 操作？
+
+解决方法 vdom react 先提出
+1. 有一个定复杂度，想减少计算次数比较难
+1. 能不能把计算，更多的转为js 计算？因为 js 执行速度很快
+1. vdom 用 js 模拟 dom 结构，计算出最小的变更，操作 dom
+
+具体怎么操作？
+用 js 模拟 dom 结构
+div#div1.container
+  p{vdom}
+  ul[style=font-size: 20px] > li{a}
+  url
+/div
+
+{
+  tag: 'div'
+  props: {
+    className: 'container'
+    id div1
+  },
+  children [
+    {
+      tag p
+      children 'vdom'
+    },
+    {
+      tag ul
+      props {
+        style font-size 20px
+      },
+      children [
+        {
+          tag li
+          children 'a'
+        }
+      ]
+    }
+  ]
+}
+
+通过 snabbdom 学习 vdom
+1. 简单强大的 vdom 库， 易学易用
+1. vue 参考它实现的 vdom 和 diff
+1. https://github.com/snabbdom/snabbdom
+1. vue 3.0 重写了vdom 代码，优化了性能
+1. 但是 vdom 的基本理念不变，面试考点也不变
+1. react vdom 具体实现 和 vue 也不同，但是不妨碍统一学习
+
+4-7 用过 虚拟dom 吗 
+snabbdom 代码演示
+1. 面试题：请用 vnode 模拟 html 片段
+
+snabbdom 重点总结
+h 函数
+1. 接收参数
+1. 返回 vnode
+vnode 数据结构
+patch 函数
+1. 直接渲染到空的dom元素中
+1. 更新已有的内容
+
+vdom 总结
+1. 用 js 模拟 dom 结构（vnode）
+1. 新旧 vnode 对比，得出最小的更新范围，最后更新 dom
+1. 数据驱动视图的模式下，有效控制 dom 更新
+
+4-8 虚拟 dom -diff 算法
+通过 把dom 用js 模拟，进行计算，对比，找出最小的更新范围，让它去更新，对比的过程：diff 算法
+diff 算法
+1. diff 算法 是 vdom 中最核心，最关键部分
+1. diff 算法能在日常使用 vue react 中体现出来
+1. diff 算法是前端热门话题，面试“宠儿”
+
+diff 算法不是独创的
+diff 算法概念
+1. diff 即对比，是一个广泛的概念，linux diff git diff
+1. 两个 js 对象也可以做 diff https// github.com/cujijs/jiff
+1. 两棵树做 diff ，vdom diff
+
+树 diff 的时间复杂度 O(n^3)
+1. 第一，遍历 tree1，第二，遍历 tree2
+1. 第三，排序
+1. 1000 个节点，要计算1亿次，算法不可用
+
+优化时间复杂度到 O(n)
+1. 只比较同一层级，不跨级比较
+1. tag 不相同，则直接删掉重建，不再深度比较
+1. tag 和 key 两者都相同，则认为是相同节点，不再深度比较
+ 
+核心函数、流程梳理
