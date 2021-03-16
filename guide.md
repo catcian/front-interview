@@ -558,3 +558,237 @@ diff 算法概念
 1. tag 和 key 两者都相同，则认为是相同节点，不再深度比较
  
 核心函数、流程梳理
+4-9 深入 diff 算法源码解读 snabbdom 源码解读
+src/h.ts/h
+return vnode (sel, data, children)
+
+src/vnode
+
+src/snabbdom/path
+init return path
+//执行 pre hook 
+cbs 
+
+4-10 深入 diff 算法源码解读 path函数
+
+4-11 深入 diff 算法源码解读 pathVnode 函数
+
+4-12 深入 diff 算法源码解读 updateChildren 函数
+ 
+4-13 虚拟 dom 总结 和 复习
+1. pathVnode
+1. addVnodes removeVnodes
+1. updateChildren (key 的重要性)
+
+vdom diff 算法总结
+1. 细节很重要，updateChildren 的过程也不重要，不要深究
+1. vdom 核心概念很重要， h、vnode、path、diff、key 等
+1. vdom 存在的价值更加重要：数据驱动视图，控制 dom 操作
+
+4-14 模板编译前置知识点 with 语法
+模板编译
+1. 模板 是 vue 开发中最常用的部分，即与使用相关联的原理
+1. 它不是 html ，有指令、插值、js表达式、到底是什么？
+1. 面试不会直接问，但是会通过 组件渲染和更新的过程，考察？
+
+1. 前置知识 js 的 with 语法 
+1. vue template complier 将模板编译为render 函数
+1. 执行 render 函数生成 vnode
+
+with 语法/with.js
+1. 改变 {} 内自由变量的查找规则，当做 obj 属性来查找
+1. 如果找不多匹配的 obj 属性，就会报错
+1. with 要慎用，它打破了作用域规则，易读性变差
+
+4-15 vue 模板被编译成什么？
+1. 模板不是 html 有指令、插值、js表达式、能实现判断、循环
+1. html 是标签语言，只有js才能实现判断、循环（图灵完备的）
+1. 因此，模板一定是转换为 某种js代码，即模板编译
+
+npm init -y vue-template-compiler 2.6.10
+/vue-template-compiler-dome
+1. 插值
+1. 表达式
+1. 属性和动态属性
+1. 条件
+
+_c createElement h 
+_v createTextNode
+_s toString
+_l renderList
+
+h -> vnode
+createELement -> vnode 
+
+流程：
+通过模板 生成 一个render函数，render函数执行，生成vnode
+vnode 通过 path函数 渲染 dom 原型
+
+模板编译总结
+1. 模板编译为 render 函数，执行 render 函数返回 vnode
+1. 基于 vnode 再执行 patch 和 diff （后面会讲）
+1. 使用 webpack vue-loader 会再开发环境编译模板（重要）
+
+4-16 vue组件使用render 代替 template
+```
+Vue.component('heading). {
+  render: function (createElement) {
+    return createElement(
+      'h' + this.levelm
+      [
+        createElement('a', {
+          attrs: {
+            name: 'headerId',
+            href: '#' + 'headerId'
+          }
+        },'this is a tag')
+      ]
+    )
+  }
+})
+```
+1. 讲完模板编译，再讲 render，就比较好理解
+1. 再有些复杂情况中，不能用 template，可以使用 render
+1. react 一直都用 render 和这里一样
+
+总结：
+1. with 语法
+1. 模板到 render 函数， 再到 vnode，再到渲染和更新
+1. vue组件使用render 代替 template
+
+4-17 回顾和复习已学的知识点
+组件 渲染/更新 过程
+1. 一个组件渲染到页面，修改 data 触发更新（数据驱动视图）
+1. 背后原理是什么，需要掌握哪些要点？
+1. 考察对流程了解的全面程度
+
+回顾学过的知识 传讲
+1. 响应式：监听 data 属性 getter setter （包括数组）
+1. 编译模板：模板到 render 函数，再到 vnode
+1. vdom path(elem, vnode) & path(vnode, newVnode)
+
+组件 渲染/更新 过程 要点：
+1. 初次渲染过程
+1. 更新过程
+1. 异步渲染
+
+4-18 组件是如何 渲染/更新的？
+初次渲染过程
+1. 解析模板为 render 函数（如果在开发环境下，webpack vue-loader 编译打包过程，已经完成的）
+1. 触发响应式，监听 data 属性，触发getter setter 方法
+1. 执行 render 函数 生成 vnode path(elem, vnode)
+
+p{message}
+script
+export default {
+  data () {
+    return {
+      message: 'hello' // 会触发 get
+      city: '北京‘// 不会触发get，因为模板没有用到，即和视图没有关系
+    }
+  }
+}
+
+更新过程
+1. 修改 data 触发 setter （此前在 getter 中已被监听）
+1. 重新执行 render 函数 生成 newVnode
+1. path（vnode，newVnode）
+
+完成流程图
+官网
+
+4-19 vue 组件的异步渲染
+异步渲染
+1. 回顾 $nextTick
+1. 汇总 data 修改，一次性更新视图
+1. 减少 dom 操作次数，提高性能
+
+总结1
+渲染和响应式关系
+渲染和模板编译的关系
+渲染和vdom的关系
+
+总结2
+1. 初次渲染
+1. 更新过程
+1. 异步渲染
+
+4-20 如何使用 js 实现 hash 路由
+前端路由原理
+vue-router、react-router 通用
+1. 稍微复杂的一点 spa，都需要路由
+1. vue-router 也是 vue 全家桶的标配之一
+1. 属于 和日常使用相关联的原理，面试常考
+1. 回顾 vue-router 的路由模式
+1. hash
+1. H5 history （需要后端支持）
+
+网页 url 组成部分
+//http://127.0.0.1:8881/01-hash.html?a=100&&b=20#/aaa/bbb
+Location.protocol// http:
+Location.hostname// 127.0.0.1
+Location.host // 127.0.0.1: 8881
+Location.port // 8881
+Location.pathname // 01-hash.html
+Location.search // ?a=1008b=20
+Location.hash //  #/aaa/bbb
+
+hash 的特点
+1. hash 变化会触发网页跳转，即浏览器的前进、后退
+1. hash 变化不会刷新页面，spa 必需的特点
+1. hash 永远不会提交到 server 端 （前端自生自灭）
+/router-demo/01-hash.html
+
+4-21 如何使用 js 实现 H5 history 路由
+H5 history
+1. 用 url 规范的路由，但跳转时不刷新页面
+1. history.pushState
+1. window.onpopstate
+
+总结
+1. hash - window.onhashchange
+1. history - history.pushState \ window.onpoptate
+1. h5 history 需要后端支持 （无论什么url 后返回 index.html）
+
+两种选择
+1. to B 系统推荐用 hash， 简单应用，对url 规范不敏感
+1. to C 系统，可以考虑选择 h5 history，但需要服务端支持
+1. 能选择简单的，就别用复杂的，要考虑成本和收益
+
+4-22 vue 原理和总结
+1. 组件化
+1. 响应式
+1. vdom 、 diff
+1. 模板编译
+1. 渲染过程
+1. 前端路由
+
+组件化
+1. 组件化的历史
+1. 数据驱动视图
+1. MVVM
+
+响应式
+1. Object.defineProperty
+1. 监听对象 深度 ，监听数组
+1. Object.defineProperty 的缺点（vue3 用 Proxy 后面会讲）
+
+vdom 、diff
+1. 应用背景
+1. vnode 结构
+1. snabbdom 使用 vnode h path
+
+模板编译
+1. with 语法
+1. 模板编译为 render 函数
+1. 执行 render 函数 生成 vnode
+
+组件渲染/更新过程
+1. 初次渲染过程
+1. 更新过程
+1. 异步渲染
+
+前端路由原理
+1. hash 
+1. h5 history  通过什么实现的
+1. 两者的对比
