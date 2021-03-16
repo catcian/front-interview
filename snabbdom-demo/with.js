@@ -11,3 +11,4 @@ with (obj) {
   console.log(b)
   console.log(c)// 会报错！！！
 }
+
